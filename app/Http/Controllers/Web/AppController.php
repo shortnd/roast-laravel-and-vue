@@ -9,4 +9,9 @@ class AppController extends Controller
     {
         return view('app');
     }
+
+    public function getLogin()
+    {
+        return view('login');
+    }
 }
