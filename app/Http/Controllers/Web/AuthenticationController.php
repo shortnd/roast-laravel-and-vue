@@ -10,30 +10,31 @@ use Socialite;
 
 class AuthenticationController extends Controller
 {
-  public function getSocialRedirect( $account )
+  public function getSocialRedirect($account)
   {
     try {
-      return Socialite::with( $account )->redirect();
-    } catch ( \InvalidArgumentException $e) {
+      return Socialite::with($account)->redirect();
+    } catch (\InvalidArgumentException $e) {
       return redirect('/login');
     }
   }
 
-  public function getSocialCallback( $account )
+  public function getSocialCallback($account)
   {
     /*
       Grabs the user who authenticated via social account
-    */
-    $socialUser = Socialite::with( $account )->user();
+     */
+    $socialUser = Socialite::with($account)->user();
     /*
     Gets the user in our database where the  provider ID returned matches a use we have stored
-    */
+     */
     $user = User::where('provider_id', '=', $socialUser->id)->where('provider', '=', $account)->first();
 
-    /**
-     * Checks to see if a user exists. If not we need to create the user in the database before logging them in.
+    /*
+        Checks to see if a user exists. If not we need to create the
+        user in the database before logging them in.
      */
-    if ( $user == null) {
+    if ($user == null) {
       $newUser = new User();
 
       $newUser->name = $socialUser->getName();
@@ -48,10 +49,10 @@ class AuthenticationController extends Controller
       $user = $newUser;
     }
 
-    /**
-     * Log in the user
+      /*
+        Log in the user
      */
-    Auth::login( $user );
+    Auth::login($user);
 
     /**
      * Redirect once done
